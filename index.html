@@ -157,10 +157,12 @@
       width: 16px; height: 16px;
       accent-color: #4A9A4A;
       cursor: pointer; flex-shrink: 0;
-      padding: 0; border: none; background: none; box-shadow: none;
+      padding: 0; border: 1px solid #A0C0A0 !important;
+      background: white !important; box-shadow: none;
+      appearance: checkbox; -webkit-appearance: checkbox;
     }
 
-    .checkbox-item input[type="checkbox"]:focus { border-color: transparent; box-shadow: none; }
+    .checkbox-item input[type="checkbox"]:focus { box-shadow: none; }
     .checkbox-label { font-size: 13px; color: #2A3020; font-weight: 500; }
 
     .btn-generate {
