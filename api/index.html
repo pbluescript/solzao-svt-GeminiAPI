@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur SVT — Séquence pédagogique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #F4F8F4;
+      color: #1A2010;
+      min-height: 100vh;
+    }
+
+    .page-wrapper {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      grid-column: 1 / -1;
+      background: #1A3A1A;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 52px;
+      gap: 16px;
+    }
+    .topbar-logo {
+      font-size: 13px;
+      font-weight: 700;
+      color: #6DBF6D;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .topbar-sep { color: rgba(255,255,255,0.15); }
+    .topbar-title { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+    /* ── Formulaire ── */
+    .form-col {
+      background: #FAFDF8;
+      border-right: 1px solid #D8E8D0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .form-header {
+      padding: 28px 32px 22px;
+      border-bottom: 1px solid #D8E8D0;
+    }
+
+    .module-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #2D6A2D;
+      background: #D4EDDA;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .form-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    .form-header p {
+      font-size: 13px;
+      color: #5A7050;
+      margin-top: 7px;
+      line-height: 1.6;
+    }
+
+    .form-body {
+      padding: 24px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #8A9E80;
+    }
+
+    .field-required { color: #4A9A4A; margin-left: 2px; }
+
+    select, input, textarea {
+      width: 100%;
+      background: #F4F8F4;
+      border: 1px solid #D0E0C8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: #1A2010;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+      appearance: none;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238A9E80' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border-color: #4A9A4A;
+      box-shadow: 0 0 0 3px rgba(74, 154, 74, 0.12);
+    }
+
+    select:disabled { opacity: 0.4; cursor: not-allowed; }
+    textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .options-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 7px;
+      border: 1px solid #D0E0C8;
+      background: #F4F8F4;
+      transition: border-color 0.12s, background 0.12s;
+      user-select: none;
+    }
+
+    .checkbox-item:hover { border-color: #4A9A4A; background: #EDF7ED; }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: #4A9A4A;
+      cursor: pointer; flex-shrink: 0;
+      padding: 0; border: none; background: none; box-shadow: none;
+    }
+
+    .checkbox-item input[type="checkbox"]:focus { border-color: transparent; box-shadow: none; }
+    .checkbox-label { font-size: 13px; color: #2A3020; font-weight: 500; }
+
+    .btn-generate {
+      background: #1A3A1A;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .btn-generate:hover { background: #2A5A2A; }
+    .btn-generate:active { transform: scale(0.99); }
+    .btn-generate:disabled { background: #8A9E80; cursor: not-allowed; transform: none; }
+
+    .btn-generate .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .btn-generate.loading .spinner { display: block; }
+    .btn-generate.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Résultat ── */
+    .result-col {
+      background: #F4F8F4;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .result-toolbar {
+      position: sticky; top: 0;
+      background: #F4F8F4;
+      border-bottom: 1px solid #D8E8D0;
+      padding: 13px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .result-toolbar-title { font-size: 13px; font-weight: 600; color: #5A7050; }
+
+    .btn-pdf {
+      background: #4A9A4A;
+      color: white; border: none;
+      border-radius: 7px;
+      padding: 8px 16px;
+      font-size: 13px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      transition: background 0.15s;
+    }
+
+    .btn-pdf:hover { background: #2D7A2D; }
+    .btn-pdf:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .result-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; color: #8A9E80; padding: 60px; text-align: center;
+    }
+
+    .result-empty .empty-icon { font-size: 48px; opacity: 0.5; }
+    .result-empty h3 { font-size: 17px; font-weight: 600; color: #5A7050; }
+    .result-empty p { font-size: 14px; color: #8A9E80; max-width: 320px; line-height: 1.6; }
+
+    #result-content { padding: 36px; display: none; }
+
+    .fiche {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #D8E8D0;
+      overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    }
+
+    .fiche-header { background: #1A3A1A; color: white; padding: 28px 36px; }
+
+    .fiche-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+
+    .fiche-tag {
+      font-size: 11px; font-weight: 600;
+      background: rgba(109,191,109,0.2);
+      color: #6DBF6D;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    .fiche-header h1 {
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.3; color: white;
+    }
+
+    .fiche-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; }
+
+    .fiche-body { padding: 30px 36px; display: flex; flex-direction: column; gap: 26px; }
+
+    .fiche-section { display: flex; flex-direction: column; gap: 10px; }
+
+    .fiche-section-title {
+      font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: #4A9A4A;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #D8E8D0;
+    }
+
+    .fiche-section-content { font-size: 14px; line-height: 1.7; color: #1A2010; }
+    .fiche-section-content p { margin-bottom: 8px; }
+    .fiche-section-content p:last-child { margin-bottom: 0; }
+    .fiche-section-content ul, .fiche-section-content ol {
+      padding-left: 20px;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .fiche-section-content li { font-size: 14px; line-height: 1.6; color: #1A2010; }
+
+    /* Tableau des séances */
+    .seances-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+    .seances-table th {
+      background: #EAF4EA;
+      font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: #2D6A2D;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid #D0E8D0;
+    }
+
+    .seances-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #E8F4E8;
+      color: #1A2010;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .seances-table tr:last-child td { border-bottom: none; }
+    .seances-table tr:nth-child(even) td { background: #F8FCF8; }
+    .seance-num { font-weight: 700; color: #1A3A1A; white-space: nowrap; }
+
+    /* Phases de séance */
+    .phases-list { display: flex; flex-direction: column; gap: 0; }
+
+    .phase-item {
+      display: flex; gap: 0;
+      border-left: 3px solid #D0E8D0;
+      padding: 10px 0 10px 16px;
+    }
+
+    .phase-item:first-child { padding-top: 4px; }
+
+    .phase-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: #4A9A4A;
+      min-width: 140px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .phase-content { font-size: 13.5px; color: #1A2010; line-height: 1.6; }
+
+    /* Notions / capacités */
+    .pills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .pill {
+      font-size: 12.5px;
+      background: #EAF4EA;
+      color: #2D6A2D;
+      border: 1px solid #C0DCC0;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-weight: 500;
+    }
+
+    .pill.cap {
+      background: #FFF8E8;
+      color: #7A5A10;
+      border-color: #E8D88A;
+    }
+
+    /* Zone de modification */
+    .modif-zone {
+      margin-top: 24px;
+      background: #FAFDF8;
+      border: 1.5px solid #D0E0C8;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: none;
+    }
+
+    .modif-zone.visible { display: block; }
+
+    .modif-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .modif-title { font-size: 13px; font-weight: 700; color: #111; }
+
+    .modif-counter {
+      font-size: 11px; font-weight: 600;
+      color: #5A7050; background: #E0EDD8;
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    .modif-counter.warning { color: #7A5A10; background: #FEF3C7; }
+    .modif-counter.exhausted { color: #991B1B; background: #FFF5F5; }
+
+    .modif-input {
+      width: 100%;
+      background: #F4F8F4;
+      border: 1px solid #D0E0C8;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13.5px;
+      font-family: 'Inter', sans-serif;
+      color: #1A2010;
+      resize: vertical;
+      min-height: 72px;
+      outline: none;
+      transition: border-color 0.15s;
+      line-height: 1.55;
+    }
+
+    .modif-input:focus { border-color: #4A9A4A; }
+    .modif-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .modif-input::placeholder { color: #8AB08A; font-style: italic; }
+
+    .modif-actions {
+      display: flex; align-items: center; gap: 12px; margin-top: 12px;
+    }
+
+    .btn-modif {
+      background: #1A3A1A; color: white; border: none;
+      border-radius: 8px; padding: 10px 20px;
+      font-size: 13px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: background 0.15s;
+    }
+
+    .btn-modif:hover { background: #2A5A2A; }
+    .btn-modif:disabled { background: #8A9E80; cursor: not-allowed; }
+
+    .btn-modif .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .btn-modif.loading .spinner { display: block; }
+    .btn-modif.loading .btn-text { display: none; }
+
+    .modif-hint { font-size: 12px; color: #8A9E80; line-height: 1.5; }
+
+    .modif-exhausted-msg {
+      text-align: center; padding: 16px;
+      font-size: 13px; color: #5A7050; line-height: 1.6; display: none;
+    }
+
+    .modif-exhausted-msg strong { color: #111; }
+
+    .error-box {
+      background: #FFF5F5; border: 1px solid #FECACA;
+      border-radius: 8px; padding: 14px 18px;
+      color: #991B1B; font-size: 13.5px; line-height: 1.55; display: none;
+    }
+
+    @media print {
+      .topbar, .modif-zone, .form-col, .result-toolbar, .result-empty { display: none !important; }
+      .page-wrapper { display: block; }
+      .result-col { overflow: visible; }
+      #result-content { display: block !important; padding: 0; }
+      .fiche { box-shadow: none; border: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topbar">
+  <span class="topbar-logo">🌿 SVT — Générateur pédagogique</span>
+  <span class="topbar-sep">|</span>
+  <span class="topbar-title">Séquence</span>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- ── FORMULAIRE ── -->
+  <div class="form-col">
+    <div class="form-header">
+      <div class="module-badge">🔬 SVT uniquement</div>
+      <h2>Générateur de séquence SVT</h2>
+      <p>Génère une fiche de séquence structurée, ancrée dans les programmes officiels SVT du collège et du lycée.</p>
+    </div>
+
+    <div class="form-body">
+
+      <!-- Niveau -->
+      <div class="field-group">
+        <label class="field-label" for="niveau">Niveau <span class="field-required">*</span></label>
+        <select id="niveau" onchange="mettreAJourThemes()">
+          <option value="">Choisir un niveau…</option>
+          <optgroup label="— COLLÈGE —">
+            <option value="6ème">6ème</option>
+            <option value="5ème">5ème</option>
+            <option value="4ème">4ème</option>
+            <option value="3ème">3ème</option>
+          </optgroup>
+          <optgroup label="— LYCÉE GÉNÉRAL —">
+            <option value="Seconde">Seconde</option>
+            <option value="Première spé SVT">Première — spécialité SVT</option>
+            <option value="Terminale spé SVT">Terminale — spécialité SVT</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Nb séances + type de séance -->
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="nb-seances">Nb de séances <span class="field-required">*</span></label>
+          <select id="nb-seances">
+            <option value="">…</option>
+            <option value="2">2 séances</option>
+            <option value="3">3 séances</option>
+            <option value="4">4 séances</option>
+            <option value="5">5 séances</option>
+            <option value="6">6 séances</option>
+            <option value="8">8 séances</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="type-seance">Type dominant</label>
+          <select id="type-seance">
+            <option value="mixte">Mixte (cours + TP)</option>
+            <option value="TP">Priorité TP / expérimental</option>
+            <option value="cours">Priorité cours magistral</option>
+            <option value="terrain">Sortie terrain / observation</option>
+            <option value="doc">Exploitation de documents</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Thème -->
+      <div class="field-group">
+        <label class="field-label" for="theme">Thème ou titre de la séquence <span class="field-required">*</span></label>
+        <input type="text" id="theme" placeholder="ex. La cellule, L'évolution, La digestion, La tectonique…">
+        <div id="suggestions-themes" style="display:none; margin-top:6px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+      </div>
+
+      <!-- Précisions -->
+      <div class="field-group">
+        <label class="field-label" for="objectifs">Précisions (optionnel)</label>
+        <textarea id="objectifs" placeholder="ex. Classe de 5ème très hétérogène, insister sur la démarche hypothético-déductive, pas de microscope disponible…"></textarea>
+      </div>
+
+      <!-- Options pédagogiques -->
+      <div class="field-group">
+        <label class="field-label">Options</label>
+        <div class="options-group">
+          <label class="checkbox-item">
+            <input type="checkbox" id="opt-phases" checked>
+            <span class="checkbox-label">Détailler les phases de chaque séance</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="opt-notions" checked>
+            <span class="checkbox-label">Lister les notions et capacités du programme</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="opt-eval" checked>
+            <span class="checkbox-label">Proposer une évaluation finale</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="opt-diff">
+            <span class="checkbox-label">Pistes de différenciation</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="opt-ressources">
+            <span class="checkbox-label">Suggestions de ressources / matériel</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="error-box" id="error-box"></div>
+        <button class="btn-generate" id="btn-generate" onclick="genererSequence()">
+          <div class="spinner"></div>
+          <span class="btn-text">🔬 Générer la séquence SVT</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── RÉSULTAT ── -->
+  <div class="result-col">
+    <div class="result-toolbar">
+      <span class="result-toolbar-title" id="toolbar-title">Résultat de la génération</span>
+      <button class="btn-pdf" id="btn-pdf" onclick="telechargerPDF()" disabled>⬇ Télécharger PDF</button>
+    </div>
+
+    <div class="result-empty" id="result-empty">
+      <div class="empty-icon">🧬</div>
+      <h3>Votre séquence SVT apparaîtra ici</h3>
+      <p>Remplissez le formulaire et cliquez sur "Générer la séquence SVT" pour obtenir une fiche structurée calée sur le programme officiel.</p>
+    </div>
+
+    <div id="result-content">
+      <div class="fiche" id="fiche-output"></div>
+
+      <div class="modif-zone" id="modif-zone">
+        <div class="modif-header">
+          <span class="modif-title">✏️ Modifier cette séquence</span>
+          <span class="modif-counter" id="modif-counter">10 modifications restantes</span>
+        </div>
+        <textarea class="modif-input" id="modif-input"
+          placeholder="ex. Rends la séance 2 plus axée TP · Ajoute une séance d'introduction par une situation-problème · Simplifie pour une classe de SEGPA · Remplace l'expérience par une simulation numérique…"></textarea>
+        <div class="modif-actions">
+          <button class="btn-modif" id="btn-modif" onclick="modifierSequence()">
+            <div class="spinner"></div>
+            <span class="btn-text">Appliquer la modification</span>
+          </button>
+          <span class="modif-hint">La séquence sera mise à jour directement</span>
+        </div>
+        <div class="modif-exhausted-msg" id="modif-exhausted-msg">
+          <strong>Limite atteinte.</strong> Générez une nouvelle séquence pour repartir de zéro.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  // ── Suggestions de thèmes par niveau ──
+  const THEMES_SVT = {
+    '6ème':  ['La cellule, unité du vivant','La photosynthèse','La biodiversité','Les êtres vivants dans leur milieu','Géologie — roches et paysages'],
+    '5ème':  ['La digestion','La respiration','La reproduction sexuée','Le peuplement des milieux','Géologie interne — volcans et séismes'],
+    '4ème':  ['La reproduction humaine','La transmission de la vie','Microorganismes et santé','L\'évolution des espèces','Tectonique des plaques'],
+    '3ème':  ['Génétique et hérédité','Corps humain et santé','Réflexes et système nerveux','Évolution et classification','Responsabilité humaine en matière de santé'],
+    'Seconde':['La cellule et son organisation','Génétique — ADN et mutations','La biodiversité et son évolution','Les écosystèmes','La tectonique des plaques'],
+    'Première spé SVT': ['Expression du génotype','Immunologie','Physiologie animale','Écologie et évolution','Génétique des populations'],
+    'Terminale spé SVT': ['Génétique et épigénétique','Neurologie et comportement','Immunologie approfondie','Évolution et biodiversité','Enjeux de la biosphère'],
+  };
+
+  function mettreAJourThemes() {
+    const niveau = document.getElementById('niveau').value;
+    const container = document.getElementById('suggestions-themes');
+    container.innerHTML = '';
+
+    if (!niveau || !THEMES_SVT[niveau]) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'flex';
+    THEMES_SVT[niveau].forEach(theme => {
+      const chip = document.createElement('span');
+      chip.style.cssText = 'cursor:pointer;font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid #C0DCC0;background:#EAF4EA;color:#2D6A2D;font-weight:500;';
+      chip.textContent = theme;
+      chip.onclick = () => { document.getElementById('theme').value = theme; };
+      container.appendChild(chip);
+    });
+  }
+
+  // ── Réparation JSON ──
+  function repairJSON(str) {
+    let result = ''; let inString = false; let escape = false;
+    for (let i = 0; i < str.length; i++) {
+      const ch = str[i];
+      if (escape) { result += ch; escape = false; continue; }
+      if (ch === '\\' && inString) { escape = true; result += ch; continue; }
+      if (ch === '"') { inString = !inString; result += ch; continue; }
+      if (inString) {
+        if (ch === '\n' || ch === '\r') { result += ' '; continue; }
+        if (ch === '\t') { result += ' '; continue; }
+        if (ch.charCodeAt(0) < 0x20) { continue; }
+      }
+      result += ch;
+    }
+    return result;
+  }
+
+  // ── Construction du prompt SVT ──
+  function construirePrompt(niveau, nbSeances, theme, typeSeance, objectifs, opts) {
+    const typeDesc = {
+      'mixte':   'séances alternant cours dialogué et activités pratiques (TP légers, manipulation de docs)',
+      'TP':      'séances majoritairement expérimentales (TP, dissections, observations au microscope, expériences)',
+      'cours':   'séances de cours magistraux enrichis de questionnements et de schémas bilan',
+      'terrain': 'séances orientées observation du terrain, sortie naturaliste, exploitation de données de terrain',
+      'doc':     'séances d\'exploitation de documents scientifiques, de graphiques, d\'articles, de données chiffrées',
+    }[typeSeance] || 'séances mixtes';
+
+    const optsTxt = [];
+    if (opts.phases)    optsTxt.push('détailler les phases de chaque séance SVT (mise en situation, recueil des représentations / hypothèses, activité / expérimentation, institutionnalisation / bilan, trace écrite)');
+    if (opts.notions)   optsTxt.push('lister les notions clés et les capacités/habiletés du programme officiel travaillées');
+    if (opts.eval)      optsTxt.push('proposer une évaluation finale (type, compétences évaluées, critères)');
+    if (opts.diff)      optsTxt.push('pistes de différenciation pour élèves en difficulté et élèves avancés');
+    if (opts.ressources) optsTxt.push('suggestions de matériel, ressources documentaires ou sites institutionnels utiles');
+
+    const optsStr = optsTxt.length > 0 ? `\n\nInclure également : ${optsTxt.join(' ; ')}.` : '';
+
+    return `Tu es un(e) professeur(e) expert(e) en SVT pour le secondaire français, parfaitement au fait des programmes officiels Éduscol et des attendus du CAPES SVT.
+
+PARAMÈTRES :
+- Niveau : ${niveau}
+- Thème / titre de la séquence : ${theme}
+- Nombre de séances : ${nbSeances}
+- Type de séances dominant : ${typeDesc}
+${objectifs ? `- Précisions de l'enseignant : ${objectifs}` : ''}${optsStr}
+
+RÈGLES CRITIQUES :
+- Réponds UNIQUEMENT avec du JSON valide, zéro texte avant ou après
+- INTERDIT : retours à la ligne littéraux dans les valeurs string (remplace par un espace)
+- Chaque valeur string = une seule ligne sans saut de ligne
+- La problématique doit être formulée comme une vraie question scientifique ouverte
+
+JSON attendu (respecte exactement cette structure) :
+{
+  "niveau": "${niveau}",
+  "nb_seances": ${nbSeances},
+  "titre": "titre clair de la séquence",
+  "sous_titre": "sous-titre court contextualisant",
+  "programme": "référence précise au programme officiel SVT (thème, sous-thème, BO)",
+  "problematique": "Question scientifique centrale de la séquence ?",
+  "notions": ["notion clé 1", "notion clé 2", "notion clé 3"],
+  "capacites": ["Extraire des informations d'un document", "Réaliser un schéma bilan", "..."],
+  "prerequis": ["prérequis 1", "prérequis 2"],
+  "seances": [
+    {
+      "num": 1,
+      "titre": "titre de la séance",
+      "duree": "1h",
+      "type": "Cours / TP / Évaluation / ...",
+      "objectif": "objectif opérationnel court",
+      "phases": {
+        "mise_en_situation": "description courte en une ligne",
+        "hypotheses": "recueil des représentations ou formulation d'hypothèses",
+        "activite": "description de l'activité principale (TP, docs, expérience...)",
+        "bilan": "institutionnalisation des savoirs, correction",
+        "trace_ecrite": "ce que les élèves retiennent / rédigent dans leur cahier"
+      }
+    }
+  ],
+  "evaluation": ${opts.eval ? '"description de l\'évaluation finale en une ligne"' : 'null'},
+  "differenciation": ${opts.diff ? '"pistes de différenciation en une ligne"' : 'null'},
+  "ressources": ${opts.ressources ? '"matériel ou ressources utiles en une ligne"' : 'null'}
+}
+
+Génère exactement ${nbSeances} séances. Réponds uniquement avec le JSON, rien d'autre.`;
+  }
+
+  // ── Appel API ──
+  async function appelAPI(prompt) {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 5000
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || `Erreur serveur ${response.status}`);
+    }
+
+    const data = await response.json();
+    const rawText = data.text || '';  // Format Gemini
+    let clean = rawText.replace(/```json|```/g, '').trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Réponse inattendue — aucun JSON trouvé. Réessayez.');
+    clean = repairJSON(jsonMatch[0]);
+
+    try {
+      return JSON.parse(clean);
+    } catch {
+      clean = clean.replace(/[\x00-\x1F\x7F]/g, ' ');
+      return JSON.parse(clean);
+    }
+  }
+
+  // ── Génération principale ──
+  async function genererSequence() {
+    const niveau     = document.getElementById('niveau').value;
+    const nbSeances  = document.getElementById('nb-seances').value;
+    const theme      = document.getElementById('theme').value.trim();
+    const typeSeance = document.getElementById('type-seance').value;
+    const objectifs  = document.getElementById('objectifs').value.trim();
+
+    const opts = {
+      phases:     document.getElementById('opt-phases').checked,
+      notions:    document.getElementById('opt-notions').checked,
+      eval:       document.getElementById('opt-eval').checked,
+      diff:       document.getElementById('opt-diff').checked,
+      ressources: document.getElementById('opt-ressources').checked,
+    };
+
+    const errorBox = document.getElementById('error-box');
+    errorBox.style.display = 'none';
+
+    if (!niveau || !nbSeances || !theme) {
+      errorBox.textContent = 'Merci de remplir le niveau, le nombre de séances et le thème.';
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btn-generate');
+    btn.disabled = true;
+    btn.classList.add('loading');
+    document.getElementById('btn-pdf').disabled = true;
+    document.getElementById('result-empty').style.display = 'none';
+    document.getElementById('result-content').style.display = 'none';
+
+    try {
+      const prompt = construirePrompt(niveau, nbSeances, theme, typeSeance, objectifs, opts);
+      const fiche = await appelAPI(prompt);
+      ficheActuelle = fiche;
+      ficheOpts = opts;
+      modificationsRestantes = 10;
+      afficherFiche(fiche, opts);
+    } catch (err) {
+      errorBox.textContent = `Erreur : ${err.message}`;
+      errorBox.style.display = 'block';
+      document.getElementById('result-empty').style.display = 'flex';
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  }
+
+  // ── État ──
+  let ficheActuelle = null;
+  let ficheOpts = {};
+  let modificationsRestantes = 10;
+
+  // ── Affichage de la fiche ──
+  function afficherFiche(f, opts) {
+    const output = document.getElementById('fiche-output');
+
+    // Tags
+    const tagsHTML = [
+      `<span class="fiche-tag">SVT</span>`,
+      `<span class="fiche-tag">${f.niveau}</span>`,
+      `<span class="fiche-tag">${f.nb_seances} séances</span>`,
+    ].join('');
+
+    // Notions
+    let notionsHTML = '';
+    if (f.notions && f.notions.length) {
+      const pills = f.notions.map(n => `<span class="pill">${n}</span>`).join('');
+      notionsHTML = `
+        <div class="fiche-section">
+          <div class="fiche-section-title">Notions clés</div>
+          <div class="fiche-section-content"><div class="pills-wrap">${pills}</div></div>
+        </div>`;
+    }
+
+    let capacitesHTML = '';
+    if (f.capacites && f.capacites.length) {
+      const pills = f.capacites.map(c => `<span class="pill cap">${c}</span>`).join('');
+      capacitesHTML = `
+        <div class="fiche-section">
+          <div class="fiche-section-title">Capacités / habiletés du programme</div>
+          <div class="fiche-section-content"><div class="pills-wrap">${pills}</div></div>
+        </div>`;
+    }
+
+    // Séances
+    const seancesHTML = f.seances.map(s => {
+      let phasesHTML = '';
+      if (opts.phases && s.phases) {
+        const labels = {
+          mise_en_situation: 'Mise en situation',
+          hypotheses:        'Hypothèses / représentations',
+          activite:          'Activité principale',
+          bilan:             'Bilan / institutionnalisation',
+          trace_ecrite:      'Trace écrite',
+        };
+        phasesHTML = '<div class="phases-list">' +
+          Object.entries(labels).map(([key, label]) =>
+            s.phases[key] ? `<div class="phase-item"><span class="phase-label">${label}</span><span class="phase-content">${s.phases[key]}</span></div>` : ''
+          ).join('') +
+          '</div>';
+      } else {
+        phasesHTML = `<span>${s.activite || ''}</span>`;
+      }
+
+      return `
+        <tr>
+          <td class="seance-num">Séance ${s.num}</td>
+          <td><strong>${s.titre}</strong><br><small style="color:#5A7050">${s.type || ''}</small></td>
+          <td style="white-space:nowrap">${s.duree}</td>
+          <td>${s.objectif}</td>
+          <td>${phasesHTML}</td>
+        </tr>`;
+    }).join('');
+
+    // Sections optionnelles
+    const sectionsOpt = [];
+
+    if (f.evaluation && f.evaluation !== 'null') {
+      sectionsOpt.push(`
+        <div class="fiche-section">
+          <div class="fiche-section-title">Évaluation finale</div>
+          <div class="fiche-section-content"><p>${f.evaluation}</p></div>
+        </div>`);
+    }
+
+    if (f.differenciation && f.differenciation !== 'null') {
+      sectionsOpt.push(`
+        <div class="fiche-section">
+          <div class="fiche-section-title">Différenciation pédagogique</div>
+          <div class="fiche-section-content"><p>${f.differenciation}</p></div>
+        </div>`);
+    }
+
+    if (f.ressources && f.ressources !== 'null') {
+      sectionsOpt.push(`
+        <div class="fiche-section">
+          <div class="fiche-section-title">Ressources & matériel</div>
+          <div class="fiche-section-content"><p>${f.ressources}</p></div>
+        </div>`);
+    }
+
+    output.innerHTML = `
+      <div class="fiche-header">
+        <div class="fiche-meta">${tagsHTML}</div>
+        <h1>${f.titre}</h1>
+        <div class="subtitle">${f.sous_titre}</div>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-section">
+          <div class="fiche-section-title">Ancrage programme officiel</div>
+          <div class="fiche-section-content"><p>${f.programme}</p></div>
+        </div>
+        <div class="fiche-section">
+          <div class="fiche-section-title">Problématique</div>
+          <div class="fiche-section-content"><p><strong>${f.problematique}</strong></p></div>
+        </div>
+        ${notionsHTML}
+        ${capacitesHTML}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+          <div class="fiche-section">
+            <div class="fiche-section-title">Prérequis</div>
+            <div class="fiche-section-content">
+              <ul>${(f.prerequis || []).map(p => `<li>${p}</li>`).join('')}</ul>
+            </div>
+          </div>
+        </div>
+        <div class="fiche-section">
+          <div class="fiche-section-title">Déroulé des séances</div>
+          <div class="fiche-section-content">
+            <table class="seances-table">
+              <thead>
+                <tr><th>N°</th><th>Titre / Type</th><th>Durée</th><th>Objectif</th><th>Déroulé</th></tr>
+              </thead>
+              <tbody>${seancesHTML}</tbody>
+            </table>
+          </div>
+        </div>
+        ${sectionsOpt.join('')}
+      </div>`;
+
+    document.getElementById('result-content').style.display = 'block';
+    document.getElementById('toolbar-title').textContent = `SVT · ${f.niveau} · ${f.titre}`;
+    document.getElementById('btn-pdf').disabled = false;
+    afficherZoneModif();
+  }
+
+  // ── Zone de modification ──
+  function afficherZoneModif() {
+    const zone       = document.getElementById('modif-zone');
+    const counter    = document.getElementById('modif-counter');
+    const input      = document.getElementById('modif-input');
+    const btn        = document.getElementById('btn-modif');
+    const exhausted  = document.getElementById('modif-exhausted-msg');
+
+    zone.classList.add('visible');
+
+    if (modificationsRestantes <= 0) {
+      input.style.display = 'none';
+      btn.style.display = 'none';
+      document.querySelector('.modif-hint').style.display = 'none';
+      exhausted.style.display = 'block';
+      counter.textContent = '0 modification restante';
+      counter.className = 'modif-counter exhausted';
+    } else {
+      input.style.display = 'block';
+      btn.style.display = 'flex';
+      document.querySelector('.modif-hint').style.display = 'block';
+      exhausted.style.display = 'none';
+      counter.textContent = `${modificationsRestantes} modification${modificationsRestantes > 1 ? 's' : ''} restante${modificationsRestantes > 1 ? 's' : ''}`;
+      counter.className = 'modif-counter' + (modificationsRestantes <= 3 ? ' warning' : '');
+    }
+  }
+
+  async function modifierSequence() {
+    const demande = document.getElementById('modif-input').value.trim();
+    if (!demande || modificationsRestantes <= 0) return;
+
+    const errorBox = document.getElementById('error-box');
+    errorBox.style.display = 'none';
+
+    const btn = document.getElementById('btn-modif');
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    const prompt = `Tu es un(e) professeur(e) expert(e) en SVT pour le secondaire français.
+
+Voici une séquence pédagogique SVT déjà générée au format JSON :
+${JSON.stringify(ficheActuelle)}
+
+Demande de modification : ${demande}
+
+RÈGLES CRITIQUES :
+- Applique uniquement la modification demandée, conserve le reste à l'identique
+- Réponds UNIQUEMENT avec le JSON complet modifié, zéro texte avant ou après
+- INTERDIT : retours à la ligne littéraux dans les valeurs string
+- Respecte exactement la même structure JSON que l'original`;
+
+    try {
+      const fiche = await appelAPI(prompt);
+      ficheActuelle = fiche;
+      modificationsRestantes--;
+      afficherFiche(fiche, ficheOpts);
+      document.getElementById('modif-input').value = '';
+      afficherZoneModif();
+    } catch (err) {
+      errorBox.textContent = `Erreur : ${err.message}`;
+      errorBox.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  }
+
+  function telechargerPDF() { window.print(); }
+
+</script>
+</body>
+</html>
